@@ -2,11 +2,15 @@
 import pvporcupine
 import sounddevice as sd
 import struct
+import threading
+import signal
+import sys
 
 por = None
+keep_running = threading.Event()
 def start_Listening(Access_Key,WakeUp):
   global por
-  por = pvporcupine.create(access_key=Access_Key,keyword_paths=None,keywords=["computer"])
+  por = pvporcupine.create(access_key=Access_Key,keywords=["computer"])
 
   def Listen_Wake(data,frames,time,status):
     if status:
@@ -17,6 +21,13 @@ def start_Listening(Access_Key,WakeUp):
     if por.process(pcm) >= 0:
       WakeUp()
 
+  def Exit(sig,frame):
+    keep_running.set()
+    por.delete()
+    sys.exit(0)
+
+  signal.signal(signal.SIGINT,Exit)
+
   with sd.InputStream(
     channels=1,
     samplerate=por.sample_rate,
@@ -26,5 +37,5 @@ def start_Listening(Access_Key,WakeUp):
     ):
     
     print("Listening for wake word...")
-    while True:
-      pass
+    keep_running.wait()
+    
