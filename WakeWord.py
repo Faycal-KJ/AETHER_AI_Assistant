@@ -1,16 +1,21 @@
 #===================Libraries==========================
 import pvporcupine
 import sounddevice as sd
-import struct
+import numpy as np
 import threading
 import signal
+import struct
 import sys
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+Access_Key = os.getenv("API_KEY")
 
 por = None
 keep_running = threading.Event()
-def start_Listening(Access_Key,WakeUp):
-  global por
-  por = pvporcupine.create(access_key=Access_Key,keywords=["computer"])
+por = pvporcupine.create(access_key=Access_Key,keywords=["computer"])
+def start_Listening(WakeUp):
 
   def Listen_Wake(data,frames,time,status):
     if status:

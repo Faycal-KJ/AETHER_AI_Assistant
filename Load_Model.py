@@ -2,7 +2,8 @@ import json
 import requests
 
 
-def Fetch_Respone(AI_Key):
+def Fetch_Respone(AI_Key,user):
+  print("User: ",user)
   response = requests.post(
     url="https://openrouter.ai/api/v1/chat/completions",
     headers={
@@ -14,7 +15,7 @@ def Fetch_Respone(AI_Key):
       "messages": [
         {
           "role": "user",
-          "content": "act like a home smart ai system that talks like jarvis,you have just been woken up by the owner like any usual day"
+          "content": f"{user}"
         }
       ]
     })
