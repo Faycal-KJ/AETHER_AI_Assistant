@@ -4,6 +4,8 @@ import requests
 
 def Fetch_Respone(AI_Key,user):
   print("User: ",user)
+  if not user:
+     user = "User Woke you up but didn't say anything"
   response = requests.post(
     url="https://openrouter.ai/api/v1/chat/completions",
     headers={
@@ -11,7 +13,7 @@ def Fetch_Respone(AI_Key,user):
       "Content-Type": "application/json"
     },
     data=json.dumps({
-      "model": "google/gemini-flash-1.5-8b",
+      "model": "mistralai/mistral-7b-instruct:free",
       "messages": [
         {
           "role": "user",
@@ -20,8 +22,8 @@ def Fetch_Respone(AI_Key,user):
       ]
     })
   )
-  
   if response.status_code == 200:
       print(" AI Response:", response.json()["choices"][0]["message"]["content"])
+      return response.json()["choices"][0]["message"]["content"]
   else:
       print(f" Error {response.status_code}: {response.text}")

@@ -1,11 +1,8 @@
 #===================Libraries==========================
 import pvporcupine
 import sounddevice as sd
-import numpy as np
 import threading
-import signal
 import struct
-import sys
 import os
 from dotenv import load_dotenv
 
@@ -25,13 +22,6 @@ def start_Listening(WakeUp):
 
     if por.process(pcm) >= 0:
       WakeUp()
-
-  def Exit(sig,frame):
-    keep_running.set()
-    por.delete()
-    sys.exit(0)
-
-  signal.signal(signal.SIGINT,Exit)
 
   with sd.InputStream(
     channels=1,
