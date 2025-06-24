@@ -1,8 +1,7 @@
 import json
 import requests
 
-
-def Fetch_Respone(AI_Key,user):
+def Fetch_Respone(AI_Key,user,Prompt,Personality):
   print("User: ",user)
   if not user:
      user = "User Woke you up but didn't say anything"
@@ -13,11 +12,11 @@ def Fetch_Respone(AI_Key,user):
       "Content-Type": "application/json"
     },
     data=json.dumps({
-      "model": "mistralai/mistral-7b-instruct:free",
+      "model": "google/gemini-flash-1.5-8b",
       "messages": [
         {
           "role": "user",
-          "content": f"{user}"
+          "content": f"""{Personality}\n{Prompt}\n{user}"""
         }
       ]
     })

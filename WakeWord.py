@@ -5,7 +5,7 @@ import threading
 import struct
 import os
 from dotenv import load_dotenv
-
+import keyboard
 load_dotenv()
 Access_Key = os.getenv("API_KEY")
 
@@ -20,7 +20,7 @@ def start_Listening(WakeUp):
     
     pcm = struct.unpack_from("h" * por.frame_length,data[:,0].tobytes())
 
-    if por.process(pcm) >= 0:
+    if por.process(pcm) >= 0 or keyboard.is_pressed("a"):
       WakeUp()
 
   with sd.InputStream(

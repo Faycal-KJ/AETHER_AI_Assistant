@@ -7,12 +7,13 @@ def Record():
   sample_rate = 16000
   block_duration = 0.1
   channels = 1
-  silence_threshold = 100
+  silence_threshold = 150
   silence_duration = 1
 
   block_size = int(block_duration * sample_rate)
-  req_silnce = int(silence_duration / block_duration)
+  req_silence = int(silence_duration / block_duration)
 
+  isTalking = False
   buffer = []
   silence_count = 0
 
@@ -23,16 +24,20 @@ def Record():
       buffer.append(block)
 
       RMS = np.sqrt(np.mean(np.square(block.astype('float32'))))
+
       print(RMS)
-      if RMS < silence_threshold:
-        silence_count += 1
-      else:
-        silence_count = 0
+      if not isTalking and RMS > silence_threshold:
+          isTalking = True
+          print("Voice detected, started recording...")
 
-      if silence_count >= req_silnce:
-        print("Done Listening")
-        break
-
+      if isTalking:
+          if RMS < silence_threshold:
+              silence_count += 1
+          else:
+              silence_count = 0
+          if silence_count >= req_silence:
+                    print("Done Listening")
+                    break
   result = np.concatenate(buffer,axis=0)
   buffer = io.BytesIO()
   sf.write(buffer,result,sample_rate,format="WAV")
