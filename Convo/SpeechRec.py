@@ -8,6 +8,7 @@ def Record():
   block_duration = 0.1
   channels = 1
   silence_threshold = 150
+  speaking_threshold = 400
   silence_duration = 1
 
   block_size = int(block_duration * sample_rate)
@@ -26,7 +27,7 @@ def Record():
       RMS = np.sqrt(np.mean(np.square(block.astype('float32'))))
 
       print(RMS)
-      if not isTalking and RMS > silence_threshold:
+      if not isTalking and RMS > speaking_threshold:
           isTalking = True
           print("Voice detected, started recording...")
 
