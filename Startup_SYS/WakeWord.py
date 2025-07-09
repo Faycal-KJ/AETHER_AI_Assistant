@@ -5,23 +5,25 @@ import threading
 import struct
 import os
 from dotenv import load_dotenv
-import keyboard
 load_dotenv()
-Access_Key = os.getenv("API_KEY")
 
-por = None
+
+Access_Key = os.getenv("API_KEY")
 keep_running = threading.Event()
+#==============Fetching WakeWord Model===============
 por = pvporcupine.create(access_key=Access_Key,keywords=["computer"])
 def start_Listening(WakeUp):
 
+  #===========Waiting For WakeWord=================
   def Listen_Wake(data,frames,time,status):
     if status:
       print(status)
     
     pcm = struct.unpack_from("h" * por.frame_length,data[:,0].tobytes())
 
-    if por.process(pcm) >= 0 or keyboard.is_pressed("a"):
-      WakeUp()
+    
+    if por.process(pcm) >= 0:
+      WakeUp()#Firing main function
 
   with sd.InputStream(
     channels=1,

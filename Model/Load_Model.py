@@ -1,12 +1,25 @@
+
+#=============Libraries===========
 import json
 import requests
 
+
+
+
+#===============Fetching Assistant Answer To User=================
 def Fetch_Respone(AI_Key,user,Personality):
-  Temp_Mem = open("Temp_Mem.txt","r",encoding="utf-8").read()
-  Core_Mem = open("Core_Mem.txt","r",encoding="utf-8").read()
+
+
+  #================Reading Updated Memory====================
+  Temp_Mem = open("Memory/Temp_Mem.txt","r",encoding="utf-8").read()
+  Core_Mem = open("Memory/Core_Mem.txt","r",encoding="utf-8").read()
+
+
   print("User: ",user)
+
+  #============Input===================
   if user == "[User Input]:":
-     user = "User Woke you up but didn't say anything"
+     user = "[User Woke you up but didn't say anything]"
   response = requests.post(
     url="https://openrouter.ai/api/v1/chat/completions",
     headers={
@@ -23,16 +36,23 @@ def Fetch_Respone(AI_Key,user,Personality):
       ]
     })
   )
+
+
+  #===============Output====================
   if response.status_code == 200:
       print(" AI Response:", response.json()["choices"][0]["message"]["content"])
       return response.json()["choices"][0]["message"]["content"]
   else:
       print(f" Error {response.status_code}: {response.text}")
 
-      
+
+
+#=============Sumerising/Using Temp Memory to Update Core Memory==========
 def Summerise(AI_Key,user):
-  Temp_Mem = open("Temp_Mem.txt","r",encoding="utf-8").read()
-  Core_Mem = open("Core_Mem.txt","r",encoding="utf-8").read()
+  Temp_Mem = open("Memory/Temp_Mem.txt","r",encoding="utf-8").read()
+  Core_Mem = open("Memory/Core_Mem.txt","r",encoding="utf-8").read()
+
+  #=================Input=====================
   response = requests.post(
     url="https://openrouter.ai/api/v1/chat/completions",
     headers={
@@ -49,6 +69,8 @@ def Summerise(AI_Key,user):
       ]
     })
 )
+  
+  #==================Ouput=====================
   if response.status_code == 200:
       return response.json()["choices"][0]["message"]["content"]
   else:
