@@ -1,1 +1,17 @@
+2025-07-10 - Present
+
+* User is actively developing/testing AI assistant Aether.
+* User prioritizes speed and efficiency in Aether's responses.
+* User finds Aether's formality excessive and annoying.
+* User appreciates Aether's humor and roasting capability.
+* User explores Aether's ability to handle complex prompts and elaborate on ideas.
+* User tests Aether's patience with repetitive prompts.
+* User can control Aether's actions (initiate, stop, put to sleep).
+* User is experimenting with adding a screen-sharing feature to Aether.
+* Aether can process text input but not visual input.
+* Aether responds in a formal, almost overly polite, tone.
+* Aether seems to occasionally use a sarcastic tone.
+* User is testing Aether's limitations regarding visual input.
+* User is likely interested in the reasoning behind Aether's responses (e.g., "what do you mean?").
+
 
