@@ -1,17 +1,13 @@
-2025-07-10 - Present
-
-* User is actively developing/testing AI assistant Aether.
-* User prioritizes speed and efficiency in Aether's responses.
-* User finds Aether's formality excessive and annoying.
-* User appreciates Aether's humor and roasting capability.
-* User explores Aether's ability to handle complex prompts and elaborate on ideas.
-* User tests Aether's patience with repetitive prompts.
-* User can control Aether's actions (initiate, stop, put to sleep).
-* User is experimenting with adding a screen-sharing feature to Aether.
-* Aether can process text input but not visual input.
-* Aether responds in a formal, almost overly polite, tone.
-* Aether seems to occasionally use a sarcastic tone.
-* User is testing Aether's limitations regarding visual input.
-* User is likely interested in the reasoning behind Aether's responses (e.g., "what do you mean?").
+[2025-07-13]
+* User is developing/modifying a codebase for an AI assistant (Aether).
+* User is focused on improving the speed of a new "vision system" within the AI assistant, particularly in updating visual displays.
+* User is actively debugging and optimizing code to improve system performance.
+* User has a preference for certain music videos (Eminem - Killer (Remix), LL COOL J mixes).
+* User seeks new video recommendations.
+* User appears to be somewhat frustrated with the initial performance of the new system but persistent in their efforts to improve it.
+* User values the AI Assistant's observational, analytical and logical responses.
+*  User seems to be aware and accepting of Aether's limitations and functional design.
+* User appreciates the assistant's objective assessment.
+* User is working on a considerable project that took several months to complete.
 
 
