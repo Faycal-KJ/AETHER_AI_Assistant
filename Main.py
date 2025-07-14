@@ -7,7 +7,6 @@ import subprocess
 from datetime import datetime
 from dotenv import load_dotenv
 from PIL import Image
-import shlex
 from pystray import Icon,Menu,MenuItem
 import re
 

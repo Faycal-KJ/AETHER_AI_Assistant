@@ -8,8 +8,8 @@ import sounddevice as sd
 
 #=============Paths=============
 piper_path = ".\\piper\\piper.exe"
-model_path = ".\\piper\\voices\\en_US-ryan-low.onnx"
-config_path = ".\\piper\\voices\\en_US-ryan-low.onnx.json"
+model_path = ".\\piper\\voices\\en_US-libritts_r-medium.onnx"
+config_path = ".\\piper\\voices\\en_US-libritts_r-medium.onnx.json"
 
 
 
