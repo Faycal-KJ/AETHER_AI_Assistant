@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from PIL import Image
 import shlex
 from pystray import Icon,Menu,MenuItem
+import re
 
 #========Helper Scripts=============
 import Convo.STT as STT
@@ -21,7 +22,7 @@ import Vision.Vision_SYS as Vision_SYS
 #===============Assets/Configurators===============
 AI_ON_Image = Image.open("Assets/ON.png")
 AI_OFF_Image = Image.open("Assets/OFF.png")
-Personality = open("Personality/Personality.txt","r",encoding="utf-8").read()
+Personality = open("Personalities/Current_Personality.txt","r",encoding="utf-8").read()
 Temp_Mem_File = open("Memory/Temp_Mem.txt", "a", encoding="utf-8", buffering=1)
 CMD_WHITELIST = set([
     "shutdown", "kill", "start", "type", "findstr", "dir", "cd", "systeminfo",
@@ -37,10 +38,10 @@ load_dotenv()
 #============Toolbar Icon==============
 def quit_app(icon, item):
     Summerise_memory()
+    sys.exit(0)
     WakeWord.keep_running.set()
     print("Turning OFF Assistant")
     icon.stop()
-    sys.exit(0)
 icon = Icon("AI Assistant", AI_OFF_Image, menu=Menu(MenuItem("Quit", quit_app)))
 def setup_tray():
   global icon
@@ -55,7 +56,6 @@ def OFF():
 def Describe():
   while True:
     Vision_SYS.Screenshot()
-    time.sleep(0.2)
 #==========Speech to Text function=======
 def Transcribtion(Recording):
   Speech = STT.Transcribe(Recording)
@@ -63,43 +63,42 @@ def Transcribtion(Recording):
 
 #==========Run AI cammands===============
 def Run_Command(command):
-  if any(command.strip().startswith(w) for w in CMD_WHITELIST):
-      arg = shlex.split(command[5:])
-      C = subprocess.run(arg,capture_output=True,text=True)
-      Temp_Mem_File.write(f"[System]:\n{C.stdout}\n")
+  for i in CMD_WHITELIST:
+    if i in command:
+      C = subprocess.run(command[5:],capture_output=True,shell=True,text=True)
+      with open("Memory/Temp_Mem.txt","a",encoding="utf-8") as f:
+       f.write(f"[System]:\n{C.stdout}\n")
 #==============Main System==============
 def WakeUp():
   print("Woke Up!")
 
   #============Record User's Speech=============
   threading.Thread(target=ON,daemon=True).start()
-  """
+  
   Recording = SpeechRec.Record()
 
 
   #======STT(Transcribe Speech to Text)=========
   Speech = Transcribtion(Recording)
 
-  """
-  Speech = input("User: ")
   #============Getting AI response==============
   Ai_Speech = Load_Model.Fetch_Respone("[User Input]:" + Speech,Personality)
 
-
+  Ai_Speech = re.sub(r"[*﹡＊∗]", "...", Ai_Speech)
   #===============Handle Response===============
   if "@@" in Ai_Speech:
     Speech_part,Command_part = Ai_Speech.split("@@")
     threading.Thread(target=Run_Command, args=(Command_part,)).start()
   else:
     Speech_part = Ai_Speech
-  if "@\@\@" in Speech_part:
-    Speech_part,A = Speech_part.split("@\@\@")
+  if "@_@_@" in Speech_part:
+    Speech_part,A = Speech_part.split("@_@_@")
   threading.Thread(target=TTS.Say, args=(Speech_part,)).start()
   #=======Saving History of Conversation(Temp Memory)=======
   Temp_Mem_File.write(f"[{datetime.now()}]\n[User]:{Speech}\n[Aether]:{Ai_Speech}\n")
 
   #==========Checking if Assistant should shut down===========
-  if "@\@\@" not in Ai_Speech:
+  if "@_@_@" not in Ai_Speech:
     WakeUp()
   else:
     threading.Thread(target=OFF,daemon=True).start()
