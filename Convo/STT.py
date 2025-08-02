@@ -1,13 +1,12 @@
 #=============Model=================
 from faster_whisper import WhisperModel
 
-Whisper = WhisperModel("base",compute_type="auto")
+Whisper = WhisperModel("tiny",compute_type="auto")
 
 
 #============Transcribing audio from SpeechRec.py=============
 def Transcribe(result):
-  segments,_ = Whisper.transcribe(result)
-
+  segments,_ = Whisper.transcribe(result,beam_size=1,word_timestamps=False)
   response = ''
   for segment in segments:
     response += segment.text + ""

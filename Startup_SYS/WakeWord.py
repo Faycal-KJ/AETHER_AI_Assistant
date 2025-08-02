@@ -7,8 +7,7 @@ import os
 from dotenv import load_dotenv
 import Convo.TTS as TTS
 import random
-import keyboard
-load_dotenv()
+load_dotenv("_internal/.env")
 
 
 Access_Key = os.getenv("API_KEY")
@@ -42,8 +41,8 @@ def start_Listening(WakeUp):
     pcm = struct.unpack_from("h" * por.frame_length,data[:,0].tobytes())
 
     
-    if por.process(pcm) >= 0 or keyboard.is_pressed("a"):
-      threading.Thread(target=TTS.Say(random.choice(Call_Response))).start()
+    if por.process(pcm) >= 0:
+      threading.Thread(target=TTS.Say,args=(random.choice(Call_Response),None)).start()
       WakeUp()#Firing main function
 
   with sd.InputStream(

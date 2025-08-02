@@ -1,27 +1,90 @@
 import os
+import sounddevice as sd
+import numpy as np
+import Convo.TTS as TTS
+import time
 
+def update_env_variable(file_path, key, value):
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+    else:
+        lines = []
 
+    updated = False
+    for i, line in enumerate(lines):
+        if line.strip().startswith(f"{key} ="):
+            lines[i] = f'{key} = "{value}"\n'
+            updated = True
+            break
 
+    if not updated:
+        lines.append(f'{key} = "{value}"\n')
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.writelines(lines)
+
+def Talk(Choice):
+    Voice = input("""Enter a number and you will hear the coresponding voice
+                          available choices (1-10)
+                        Enter "Save" and the voice will bve saved.
+                          
+                        Enter number here:""")
+    if Voice == "Save":
+        with open("piper/voices/Speaker.txt","w") as f:
+            f.write(str(Choice))
+        print("Voice Changed")
+    elif int(Voice) in range(1,11):
+        TTS.Say("Good morning Sir,i'am your personal AI assistant,i Hope i reach your standards.",Voice)
+        Choice = Voice
+        Talk(Choice)
+    else:
+        print("Pick a number from 1-10 or Enter Save!")
+        Talk()
 def Menu():
     Option = input("""These are The settings of The AI assistant.
                enter the number of the option you want to modify:
                1. Enter API Keys
-               2. Change Assistant Personality
-               3. Wipe Assistant Memory
+               2. Pick Type of Conversation
+               3. Change Assistant Personality
+               4. Change Assistant Voice
+               5. Wipe Assistant Memory
+               6. Calibrate Mic Sensitivity
                
                Enter here:""")
     if (Option == "1"):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         env_path = os.path.join(script_dir, ".env")
 
-        Key1 = input("Enter Openrouter API Key here: ")
-        Key2 = input("Enter Porcupine API key here: ")
+        Key1 = input("""Create an account in this Website: https://console.groq.com
+                    And get the API/Acess Key to Enter here: """)
+        Key2 = input("""Create an account in this Website: https://console.picovoice.ai/
+                    And get the API/Acess Key to Enter here: """)
 
         with open(env_path, "w") as f:
-            f.write(f"OpenAI_Key=\"{Key1}\"\nAPI_KEY=\"{Key2}\"")
+            f.write(f"AI_Key=\"{Key1}\"\nAPI_Key=\"{Key2}\"\n")
         print("Keys Entered Successfuly")
         Menu()
-    elif (Option == "2"):
+    elif Option == "2":
+        Type = input("""Pick A type of Conversation:
+            1. Text Chat
+            2. Voice/MIC Chat
+            
+            Enter here:""")
+        Type = int(Type)
+
+        if Type == 1:
+            update_env_variable("Set.env", "Conv", "1")
+            print("Text Conversation Type Picked")
+            Menu()
+        elif Type == 2:
+            update_env_variable("Set.env", "Conv", "2")
+            print("Voice Conversation Type Picked")
+            Menu()
+        else:
+            print("You didn't Pick one of the conversations Type")
+            Menu()
+    elif (Option == "3"):
         num = input("""Pick a Personality from he ones below y entering the number:
 1.JARVIS(Just A Rather Very Intelligent System):a Calm formal butler like assistant with some dry british sarcasm to him.
 
@@ -78,16 +141,56 @@ Enter your Pick here:""")
         else:
             print("Invalid Number please pick one of the personalities available!")
             Menu()
-    elif Option == "3":
+    elif Option == "4":
+        Talk("")
+        Menu()
+    elif Option == "5":
         Confirmation = input("Are you sure you want to Delete all of assistant Memory(you can edit it in the Memory folder if you need) y/n:")
         if Confirmation == "y" or Confirmation == "Y":
-            with open("Memory/Core_Memory.txt","w") as f:
+            with open("Memory/Core_Mem.txt","w") as f:
                 f.write("")
             print("Memory Wiped")
             Menu()
         else:
             print("Memory preserved")
             Menu()
+    elif Option == "6":
+        sample_rate = 16000
+        block_duration = 0.1
+        channels = 1
+        block_size = int(block_duration * sample_rate)
+        buffer = []
+        stream = sd.InputStream(samplerate=sample_rate,blocksize=block_size,channels=channels,dtype='int16')
+
+
+        with stream:
+            i = 0
+            avg = []
+            print("Don't Speak into the MIC")
+            time.sleep(3)
+            while i < 50:
+                block,_ = stream.read(block_size)
+                buffer.append(block)
+
+                RMS = np.sqrt(np.mean(np.square(block.astype('float32'))))
+                avg.append(RMS)
+                i += 1
+            update_env_variable("_internal/Set.env", "silence", max(avg))
+            i = 0
+            avg = []
+            print("""Read this Message out loud:
+                  The Player Ran through the defense of the oposing team and scored an amazing goal""")
+            while i < 50:
+                block,_ = stream.read(block_size)
+                buffer.append(block)
+
+                RMS = np.sqrt(np.mean(np.square(block.astype('float32'))))
+                avg.append(RMS)
+                i += 1
+            update_env_variable("_internal/Set.env", "Voice", np.mean(avg))
+            print("Calibration is Done")
+            Menu()
+
     else:
         print("Please Pick an available option!")
         Menu()

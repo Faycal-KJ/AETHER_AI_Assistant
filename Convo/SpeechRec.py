@@ -3,6 +3,9 @@ import soundfile as sf
 import sounddevice as sd
 import numpy as np
 import io
+import os
+from dotenv import load_dotenv
+load_dotenv("Set.env")
 
 
 #=========Record Mic Input==========
@@ -12,8 +15,8 @@ def Record():
     sample_rate = 16000
     block_duration = 0.1
     channels = 1
-    silence_threshold = 150
-    speaking_threshold = 400
+    silence_threshold = os.getenv("silence")
+    speaking_threshold = os.getenv("Voice")
     silence_duration = 1
     block_size = int(block_duration * sample_rate)
     req_silence = int(silence_duration / block_duration)
@@ -37,7 +40,7 @@ def Record():
             print(RMS)
 
             #============Detecting When User Starts to Speak==========
-            if not isTalking and RMS > speaking_threshold:
+            if not isTalking and RMS > float(speaking_threshold):
                 isTalking = True
                 print("Voice detected, started recording...")
 
@@ -45,7 +48,7 @@ def Record():
 
             #============Detecting Silence to end Recording===========
             if isTalking:
-                if RMS < silence_threshold:
+                if RMS < float(silence_threshold):
                     silence_count += 1
                 else:
                     silence_count = 0
