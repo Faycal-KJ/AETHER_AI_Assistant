@@ -36,7 +36,7 @@ AETHER is a voice-activated, intelligent personal assistant designed for local d
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/AZWOLD/QUADRA_AI_Assistant.git
+git clone https://github.com/Faycal/AETHER_AI_Assistant.git
 cd aether-ai-assistant
 ```
 
